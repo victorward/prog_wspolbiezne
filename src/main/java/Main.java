@@ -10,7 +10,6 @@ public class Main {
     private void symmetricDifference(int sizeX, int sizeY, int numberOfProcesses, int numberOfPermits) {
         SortedSet<Integer> setX = new TreeSet<>();
         SortedSet<Integer> setY = new TreeSet<>();
-        SortedSet<Integer> setC = new TreeSet<>();
 
         fillAndSort(setX, setY, sizeX, sizeY);
         System.out.println("Array X");
@@ -22,13 +21,10 @@ public class Main {
         MyThread p[] = new MyThread[numberOfProcesses];
 
         //algorytm na znajdywanie różnicy symetrycznej
-        for (Integer integer : setX) {
-            if (setY.contains(integer)) {
-                setY.remove(integer);
-            } else {
-                setY.add(integer);
-            }
-        }
+        SortedSet<Integer> setC = new TreeSet<>(setX);
+        setC.removeAll(setY);
+        setY.removeAll(setX);
+        setC.addAll(setY);
 
         System.out.println("\nOutput");
         showArray(setY);
