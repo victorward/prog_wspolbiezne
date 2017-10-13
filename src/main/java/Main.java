@@ -13,7 +13,10 @@ public class Main {
         SortedSet<Integer> setC = new TreeSet<>();
 
         fillAndSort(setX, setY, sizeX, sizeY);
-        showArrays(setX, setY);
+        System.out.println("Array X");
+        showArray(setX);
+        System.out.println("\nArray Y");
+        showArray(setY);
 
         Semaphore semaphore = new Semaphore(numberOfPermits, true);
         MyThread p[] = new MyThread[numberOfProcesses];
@@ -28,7 +31,7 @@ public class Main {
         }
 
         System.out.println("\nOutput");
-        for (Integer x : setY) System.out.print(x + " ");
+        showArray(setY);
     }
 
     private void fillAndSort(Set<Integer> setX, Set<Integer> setY, int sizeX, int sizeY) {
@@ -41,12 +44,8 @@ public class Main {
         }
     }
 
-    private void showArrays(Set<Integer> setX, Set<Integer> setY) {
-        System.out.println("Array X");
-        for (Integer x : setX) System.out.print(x + " ");
-        System.out.println("\nArray Y");
-        for (Integer y : setY) System.out.print(y + " ");
-
+    private void showArray(Set<Integer> set) {
+        for (Integer x : set) System.out.print(x + " ");
     }
 }
 
