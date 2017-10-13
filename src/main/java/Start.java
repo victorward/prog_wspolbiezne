@@ -4,53 +4,39 @@ import java.util.concurrent.Semaphore;
 public class Start {
     public static void main(String[] args) {
         Start main = new Start();
-        main.symmetricDifference(5, 12, 3, 1);
+        main.symmetricDifference(5, 12, 1);
     }
 
-    private void symmetricDifference(int sizeX, int sizeY, int numberOfProcesses, int numberOfPermits) {
+    private void symmetricDifference(int sizeX, int sizeY, int numberOfPermits) {
         SortedSet<Integer> setX = new TreeSet<>();
         SortedSet<Integer> setY = new TreeSet<>();
-        SortedSet<Integer> setC = new TreeSet<>();
+        SymmetricDifferenceSet symmetricDifferenceSet = new SymmetricDifferenceSet();
 
-        fillAndSort(setX, setY, sizeX, sizeY);
+        fillData(setX, setY, sizeX, sizeY);
         System.out.println("Array X");
         showArray(setX);
         System.out.println("\nArray Y");
         showArray(setY);
 
         Semaphore semaphore = new Semaphore(numberOfPermits, true);
-        MyThread p[] = new MyThread[numberOfProcesses];
 
         //algorytm na znajdywanie różnicy symetrycznej
-        setC = findElements(setX, setY, setC);
-        setC = findElements(setY, setX, setC);
-
-        System.out.println("\nOutput array");
-        showArray(setC);
-    }
-
-    private SortedSet<Integer> findElements(Set<Integer> setIterated, Set<Integer> setCompared, SortedSet<Integer> setC) {
-        boolean theSameElement;
-        int helper;
-        Iterator<Integer> it1 = setIterated.iterator();
-        Iterator<Integer> it2;
-        while (it1.hasNext()) {
-            helper = it1.next();
-            theSameElement = false;
-            it2 = setCompared.iterator();
-            while (it2.hasNext()) {
-                if (it2.next() == helper) {
-                    theSameElement = true;
-                }
-            }
-            if (!theSameElement) {
-                setC.add(helper);
-            }
+        MyThread one = new MyThread(semaphore, symmetricDifferenceSet, setX, setY, "One");
+        MyThread two = new MyThread(semaphore, symmetricDifferenceSet, setY, setX, "Two");
+        Output output = new Output(semaphore, symmetricDifferenceSet);
+        one.start();
+        two.start();
+        try {
+            one.join();
+            two.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return setC;
+        output.start();
+
     }
 
-    private void fillAndSort(Set<Integer> setX, Set<Integer> setY, int sizeX, int sizeY) {
+    private void fillData(Set<Integer> setX, Set<Integer> setY, int sizeX, int sizeY) {
         Random random = new Random();
         while (setX.size() != sizeX) {
             setX.add(random.nextInt(sizeX * 2) + 1);
@@ -65,27 +51,87 @@ public class Start {
     }
 }
 
-class MyThread extends Thread {
-    private int threadId;
-    private Semaphore semaphore;
+class SymmetricDifferenceSet {
+    SortedSet<Integer> set;
 
-    public MyThread(Semaphore semaphore) {
-        this.semaphore = semaphore;
+    SymmetricDifferenceSet() {
+        set = new TreeSet<>();
     }
+}
 
-    public void setThreadId(int threadId) {
-        this.threadId = threadId;
+class MyThread extends Thread {
+    private Semaphore semaphore;
+    private SymmetricDifferenceSet symmetricDifferenceSet;
+    private Set<Integer> setIterated;
+    private Set<Integer> setCompared;
+    private String name;
+
+    MyThread(Semaphore semaphore, SymmetricDifferenceSet symmetricDifferenceSet, Set<Integer> setIterated, Set<Integer> setCompared, String name) {
+        this.semaphore = semaphore;
+        this.symmetricDifferenceSet = symmetricDifferenceSet;
+        this.setIterated = setIterated;
+        this.setCompared = setCompared;
+        this.name = name;
     }
 
     public void run() {
-        for (int i = 0; i < 3; i++) {
+        symmetricDifferenceSet.set = findElements(setIterated, setCompared, symmetricDifferenceSet.set);
+    }
+
+    private SortedSet<Integer> findElements(Set<Integer> setIterated, Set<Integer> setCompared, SortedSet<Integer> setC) {
+        boolean theSameElement;
+        int helper;
+        Iterator<Integer> it1 = setIterated.iterator();
+        Iterator<Integer> it2;
+        while (it1.hasNext()) {
+            System.out.println("Thread name " + name);
+            helper = it1.next();
+            theSameElement = false;
+            it2 = setCompared.iterator();
+            while (it2.hasNext()) {
+                if (it2.next() == helper) {
+                    theSameElement = true;
+                }
+            }
             try {
                 semaphore.acquire();
-                System.out.println(threadId + " " + 1);
-                semaphore.release();
             } catch (InterruptedException e) {
-                System.out.println("Exception " + e.toString());
+                e.printStackTrace();
             }
+            if (!theSameElement) {
+                setC.add(helper);
+            }
+//            System.out.println("Semafor " + name + " is release");
+            semaphore.release();
         }
+        return setC;
     }
+
+}
+
+class Output extends Thread {
+    private Semaphore semaphore;
+    private SymmetricDifferenceSet symmetricDifferenceSet;
+
+    Output(Semaphore semaphore, SymmetricDifferenceSet symmetricDifferenceSet) {
+        this.semaphore = semaphore;
+        this.symmetricDifferenceSet = symmetricDifferenceSet;
+    }
+
+    public void run() {
+        System.out.println("Output is calling");
+        showArray(symmetricDifferenceSet.set);
+    }
+
+    private void showArray(Set<Integer> set) {
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("\nOutput:");
+        for (Integer x : set) System.out.print(x + " ");
+        semaphore.release();
+    }
+
 }
