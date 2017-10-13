@@ -1,3 +1,5 @@
+import sun.plugin.javascript.navig.Array;
+
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -21,13 +23,34 @@ public class Main {
         MyThread p[] = new MyThread[numberOfProcesses];
 
         //algorytm na znajdywanie różnicy symetrycznej
-        SortedSet<Integer> setC = new TreeSet<>(setX);
-        setC.removeAll(setY);
-        setY.removeAll(setX);
-        setC.addAll(setY);
+//        SortedSet<Integer> setC = new TreeSet<>(setX);
+//        setC.removeAll(setY);
+//        setY.removeAll(setX);
+//        setC.addAll(setY);
+
+        ArrayList<Integer> tmpX = new ArrayList<>(setX);
+        ArrayList<Integer> tmpY = new ArrayList<>(setY);
+
+        int chunkSizeX = tmpX.size() % 2 == 0 ? tmpX.size() / 2 : (tmpX.size() / 2) + 1;
+        int chunkSizeY = tmpY.size() % 2 == 0 ? tmpY.size() / 2 : (tmpY.size() / 2) + 1;
+
+        ArrayList<Integer> tmpX_part_1 = new ArrayList<>(part(tmpX.subList(0, chunkSizeX), tmpY.subList(0, chunkSizeY)));
+        ArrayList<Integer> tmpX_part_2 = new ArrayList<>(part(tmpX.subList(chunkSizeX, tmpX.size()), tmpY.subList(chunkSizeY, tmpY.size())));
+
+        SortedSet<Integer> out = new TreeSet<>(tmpX_part_1);
+        out.addAll(tmpX_part_2);
 
         System.out.println("\nOutput");
-        showArray(setY);
+        showArray(out);
+    }
+
+    private List<Integer> part(List<Integer> setX, List<Integer> setY) {
+        List<Integer> tmpY = new ArrayList<>(setY);
+        List<Integer> out = new ArrayList<>(setX);
+        out.removeAll(tmpY);
+        tmpY.removeAll(setX);
+        out.addAll(tmpY);
+        return out;
     }
 
     private void fillAndSort(Set<Integer> setX, Set<Integer> setY, int sizeX, int sizeY) {
@@ -38,6 +61,10 @@ public class Main {
         while (setY.size() != sizeY) {
             setY.add(random.nextInt(sizeY * 2) + 1);
         }
+    }
+
+    private void showArray(List<Integer> set) {
+        for (Integer x : set) System.out.print(x + " ");
     }
 
     private void showArray(Set<Integer> set) {
