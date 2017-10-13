@@ -27,28 +27,25 @@ public class Start {
 
         System.out.println("\nOutput array");
         showArray(setC);
-
-//        setC.removeAll(setY);
-//        setY.removeAll(setX);
-//        setC.addAll(setY);
-
-//        System.out.println("\nOutput");
-//        showArray(setC);
     }
 
-    private SortedSet<Integer> findElements(Set<Integer> setIterated, Set<Integer> setCompared, SortedSet<Integer> setC){
+    private SortedSet<Integer> findElements(Set<Integer> setIterated, Set<Integer> setCompared, SortedSet<Integer> setC) {
         boolean theSameElement;
         int helper;
-        Iterator it1 = setIterated.iterator();
-        Iterator it2 = setCompared.iterator();
-        while(it1.hasNext()){
-            helper = (Integer)it1.next();
+        Iterator<Integer> it1 = setIterated.iterator();
+        Iterator<Integer> it2;
+        while (it1.hasNext()) {
+            helper = it1.next();
             theSameElement = false;
             it2 = setCompared.iterator();
-            while(it2.hasNext()){
-                if((Integer)it2.next() == helper){ theSameElement = true; }
+            while (it2.hasNext()) {
+                if (it2.next() == helper) {
+                    theSameElement = true;
+                }
             }
-            if (!theSameElement) { setC.add(helper); }
+            if (!theSameElement) {
+                setC.add(helper);
+            }
         }
         return setC;
     }
