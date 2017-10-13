@@ -17,6 +17,7 @@ public class Start {
         showArray(setX);
         System.out.println("\nArray Y");
         showArray(setY);
+        System.out.println();
 
         Semaphore semaphore = new Semaphore(numberOfPermits, true);
 
@@ -129,7 +130,7 @@ class Output extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("\nOutput:");
+        System.out.println("Output:");
         for (Integer x : set) System.out.print(x + " ");
         semaphore.release();
     }
