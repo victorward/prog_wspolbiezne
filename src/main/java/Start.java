@@ -1,7 +1,8 @@
 import java.util.Arrays;
 import java.util.Random;
-import java.util.Stack;
 import java.util.concurrent.Semaphore;
+
+//rozwiazanie problemu gdy elementy w zbiorach A i B się powtarzaja
 
 public class Start {
     public static void main(String[] args)
@@ -32,28 +33,50 @@ public class Start {
 
         //algorytm na znajdywanie różnicy symetrycznej
         int itA=0, itB=0, itC=0;
+        boolean nextIteration = false;
         while (itA < numberOfElements && itB < numberOfElements) {
-            if (A[itA] < B[itB]) {
-                C[itC] = A[itA];
+            //zmienna pomocnicza ktora ustawiam na true jest w posortowanym zbiorze A lub B wystepuja te same liczby jedna za druga
+            // (wtedy zwiekszam licznik aby nie analizowac tej samej liczby drugi raz
+            nextIteration = false;
+            if (itA > 0 && A[itA] == A[itA-1]){
                 itA++;
-                itC++;
-            } else if (B[itB] < A[itA]) {
-                C[itC] = B[itB];
+                nextIteration = true;
+            }
+            if (itB > 0 && B[itB] == B[itB-1]){
                 itB++;
-                itC++;
-            } else {
-                itA++;
-                itB++;
+                nextIteration = true;
+            }
+
+            //wlasciwe rozwiazanie problemu (gdy mam pewnosc ze liczby w jednym zbiorze sie nie powtarzaja
+            if (!nextIteration) {
+                if (A[itA] < B[itB]) {
+                    C[itC] = A[itA];
+                    itA++;
+                    itC++;
+                } else if (B[itB] < A[itA]) {
+                    C[itC] = B[itB];
+                    itB++;
+                    itC++;
+                } else {
+                    itA++;
+                    itB++;
+                }
             }
         }
+        //przepisywanie ewentualnych pozostalych liczb ze zbioru A i B do zbioru C
         for (int i=itA; i<A.length; i++){
-            C[itC] = A[itA];
-            itC++;
+            if (i > 0  && A[i] > A[i-1]) {
+                C[itC] = A[i];
+                itC++;
+            }
         }
         for (int i=itB; i<B.length; i++){
-            C[itC] = B[itB];
-            itC++;
+            if (i > 0 && B[i] > B[i - 1]) {
+                C[itC] = B[i];
+                itC++;
+            }
         }
+
         System.out.println("Tablica c");
         for(int i=0; i<C.length; i++){
             System.out.print(C[i] + " ");
