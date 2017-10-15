@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 public class Start {
     public static void main(String[] args) {
         Start main = new Start();
-        main.symmetricDifference(5, 12, 1);
+        main.symmetricDifference(1000, 1000, 1);
     }
 
     private void symmetricDifference(int sizeX, int sizeY, int numberOfPermits) {
@@ -85,7 +85,7 @@ class MyThread extends Thread {
         Iterator<Integer> it1 = setIterated.iterator();
         Iterator<Integer> it2;
         while (it1.hasNext()) {
-            System.out.println("Thread name " + name);
+            System.out.println("Thread name " + name + " checking next element");
             helper = it1.next();
             theSameElement = false;
             it2 = setCompared.iterator();
@@ -94,20 +94,21 @@ class MyThread extends Thread {
                     theSameElement = true;
                 }
             }
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            //uzywamy semafora w celu ograniczenia dostepu do zapisywania w SetC przez oba watki
             if (!theSameElement) {
+                try {
+                    semaphore.acquire();
+                    System.out.println("Semafor " + name + " is acquired");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 setC.add(helper);
+                semaphore.release();
+                System.out.println("Semafor " + name + " is released");
             }
-//            System.out.println("Semafor " + name + " is release");
-            semaphore.release();
         }
         return setC;
     }
-
 }
 
 class Output extends Thread {
