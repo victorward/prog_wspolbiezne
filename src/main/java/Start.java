@@ -98,13 +98,13 @@ class MyThread extends Thread {
             if (!theSameElement) {
                 try {
                     semaphore.acquire();
-                    System.out.println("Semafor w watku " + name + " is acquired");
+                    System.out.println("Semaphore in thread " + name + " is acquired");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 setC.add(helper);
                 semaphore.release();
-                System.out.println("Semafor w watku" + name + " is released");
+                System.out.println("Semaphore in thread " + name + " is released");
             }
         }
         return setC;
