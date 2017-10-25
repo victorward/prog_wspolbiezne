@@ -1,2 +1,3 @@
 rootProject.name = 'wspol-zad1'
+include 'zad_3'
 
