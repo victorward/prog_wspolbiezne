@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 public class Start {
     public static void main(String[] args) {
         Start main = new Start();
-        main.symmetricDifference(1000, 1000, 1);
+        main.symmetricDifference(100, 100, 1);
     }
 
     private void symmetricDifference(int sizeX, int sizeY, int numberOfPermits) {
@@ -21,6 +21,8 @@ public class Start {
 
         Semaphore semaphore = new Semaphore(numberOfPermits, true);
 
+        //liczenie czasu wykonania
+        long start = System.nanoTime();
         //algorytm na znajdywanie różnicy symetrycznej
         MyThread one = new MyThread(semaphore, symmetricDifferenceSet, setX, setY, "One");
         MyThread two = new MyThread(semaphore, symmetricDifferenceSet, setY, setX, "Two");
@@ -34,7 +36,8 @@ public class Start {
             e.printStackTrace();
         }
         output.start();
-
+        long end = (System.nanoTime() - start)/1000000;
+        System.out.println("\nCzas wykonywania: " + end);
     }
 
     private void fillData(Set<Integer> setX, Set<Integer> setY, int sizeX, int sizeY) {
