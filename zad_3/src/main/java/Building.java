@@ -1,14 +1,18 @@
 /**
  * @author Yuriy on 25.10.2017.
  */
-public class Building {
+class Building {
     private int nFloors;
+    private Elevator elevator;
 
-    public Building(int nFloors) {
+    Building(int nFloors) {
         this.nFloors = nFloors;
+        this.elevator = new Elevator(nFloors);
     }
 
-    public int getnFloors() {
-        return nFloors;
+    Elevator getElevator() {
+        return elevator;
     }
+
+
 }
