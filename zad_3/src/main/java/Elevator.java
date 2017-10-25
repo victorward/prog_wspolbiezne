@@ -1,5 +1,6 @@
-import java.nio.file.Path;
 import java.util.TreeSet;
+
+import static java.lang.Thread.interrupted;
 
 /**
  * @author Yuriy on 25.10.2017.
@@ -8,8 +9,8 @@ public class Elevator implements Runnable {
     private int currentFloor;
     private int nRaiders;
     private boolean isGooingUp;
-    private boolean isGoingDown;
     private boolean isDoorOpen;
+    private Building building;
     private TreeSet<Integer> upRequests;
     private TreeSet<Integer> downRequests;
 
@@ -17,12 +18,14 @@ public class Elevator implements Runnable {
 
     private Thread thread;
 
-    public Elevator(int nFloors) {
-        this.currentFloor = -1;
+    public Elevator(Building building) {
+        this.currentFloor = 0;
         this.nRaiders = 0;
         this.isDoorOpen = false;
         this.upRequests = new TreeSet<>();
         this.downRequests = new TreeSet<>();
+        this.building = building;
+        int nFloors = building.getnFloors();
         this.floorsEvents = new ElevatorEvent[nFloors];
         for (int i = 0; i < nFloors; i++) {
             this.floorsEvents[i] = new ElevatorEvent();
@@ -32,7 +35,30 @@ public class Elevator implements Runnable {
 
     @Override
     public void run() {
+        while (true) {
+            if (interrupted()) return;
 
+            boolean noMoreRequests = this.upRequests.isEmpty() && this.downRequests.isEmpty();
+            int nextFloor = getNextRequestedFloor();
+
+            if (noMoreRequests) {
+                synchronized (this) {
+                    this.currentFloor = 0;
+                    try {
+                        System.out.println("Elevator is waiting for riders requests");
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+//            } else if (nextFloor != 0) {
+            } else {
+                System.out.println("Elevator will move up to floor " + nextFloor);
+                visitFloor(nextFloor);
+                openDoor();
+                closeDoor();
+            }
+        }
     }
 
     void openDoor() {
@@ -40,27 +66,33 @@ public class Elevator implements Runnable {
         System.out.println("Elevator open door on floor " + this.currentFloor);
         int nWaiters = this.floorsEvents[this.currentFloor].getWaiters();
         System.out.println("Floor " + this.currentFloor + " has " + nWaiters + " raiders waiting on elevator");
-//        this.floorsEvents[this.currentFloor].
+        this.floorsEvents[this.currentFloor].raise(this.currentFloor);
     }
 
     void closeDoor() {
         this.isDoorOpen = false;
+        synchronized (this.building) {
+            this.building.notifyAll();
+        }
         System.out.println("Elevator closed door on " + this.currentFloor);
     }
 
-    void simulateMovement(int floor) {
-        int floorToMove = Math.abs(floor - currentFloor);
-        int speed = 1000;
-        try {
-            thread.join(floorToMove * speed); // nie wiem czy to tak, czy przez Thread.sleep czy inaczej
-            this.currentFloor = floor;
-            System.out.println("Elevator " + (this.isGooingUp ? " has moved up to floor " : " has moved down to floor ") + this.currentFloor);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void simulateMovement(int floor) {
+//        int floorToMove = Math.abs(floor - currentFloor);
+//        int speed = 1000;
+//        try {
+//            thread.join(floorToMove * speed); // nie wiem czy to tak, czy przez Thread.sleep czy inaczej
+//            this.currentFloor = floor;
+//            System.out.println("Elevator " + (this.isGooingUp ? " has moved up to floor " : " has moved down to floor ") + this.currentFloor);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        this.currentFloor = floor;
+        System.out.println("Elevator " + (this.isGooingUp ? " has moved up to floor " : " has moved down to floor ") + this.currentFloor);
     }
 
-    void visitFloor(int floor) {
+    synchronized void visitFloor(int floor) {
         if (this.isGooingUp) {
             this.upRequests.remove(floor);
         } else {
@@ -69,20 +101,21 @@ public class Elevator implements Runnable {
         simulateMovement(floor);
     }
 
-    void enterElevator(int raiderId) {
+    synchronized boolean enterElevator(int raiderId) {
         this.nRaiders++;
         System.out.println("Raider " + raiderId + " enter elevator on floor " + this.currentFloor);
-//        this.floorsEvents[this.currentFloor].c
+        this.floorsEvents[this.currentFloor].complete(this.currentFloor);
+        return true;
     }
 
-    void exitElevator(int raiderId) {
+    synchronized void exitElevator(int raiderId) {
         this.nRaiders--;
         System.out.println("Raider " + raiderId + " has exited elevator on floor " + this.currentFloor);
-//        this.floorsEvents[this.currentFloor].e
+        this.floorsEvents[this.currentFloor].complete(this.currentFloor);
     }
 
     void passIfWrongDirection() {
-//        this.floorsEvents[this.currentFloor].c
+        this.floorsEvents[this.currentFloor].complete(this.currentFloor);
     }
 
     void requestFloor(int requestedFloor, int raiderId) {
@@ -91,17 +124,20 @@ public class Elevator implements Runnable {
     }
 
     void requestFloor(int requestedFloor, boolean goingUp, int raiderId) {
-        if (goingUp) {
-            this.upRequests.add(requestedFloor);
-            System.out.println("Elevator receives request from raider " + raiderId + " to go up to floor " + requestedFloor);
-        } else {
-            this.downRequests.add(requestedFloor);
-            System.out.println("Elevator receives request from raider " + raiderId + " to go down to floor " + requestedFloor);
+        synchronized (this) {
+            if (goingUp) {
+                this.upRequests.add(requestedFloor);
+                System.out.println("Elevator receives request from raider " + raiderId + " to go up to floor " + requestedFloor);
+            } else {
+                this.downRequests.add(requestedFloor);
+                System.out.println("Elevator receives request from raider " + raiderId + " to go down to floor " + requestedFloor);
+            }
+            notifyAll();
         }
-//        this.floorsEvents[this.currentFloor].ar
+        this.floorsEvents[this.currentFloor].arrive(requestedFloor, raiderId);
     }
 
-    int getNextRequestedFloor() {
+    synchronized int getNextRequestedFloor() {
         if (this.isGooingUp) {
             Integer next = this.upRequests.higher(this.currentFloor);
             if (next != null) {
@@ -115,7 +151,7 @@ public class Elevator implements Runnable {
                     return next;
                 } else {
                     System.out.println("Elevator is going to go to the default floor");
-                    return -1;
+                    return 0;
                 }
             }
         } else {
@@ -131,23 +167,15 @@ public class Elevator implements Runnable {
                     return next;
                 } else {
                     System.out.println("Elevator is going to go to the default floor");
-                    return -1;
+                    return 0;
                 }
             }
         }
     }
 
     // getters
-    public int getCurrentFloor() {
-        return currentFloor;
-    }
-
-    public boolean isGooingUp() {
+    public boolean isGoingUp() {
         return isGooingUp;
-    }
-
-    public boolean isGoingDown() {
-        return isGoingDown;
     }
 
     public Thread getThread() {

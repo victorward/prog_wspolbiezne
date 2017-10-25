@@ -26,8 +26,8 @@ public class Task {
         System.out.println("***.**.*.**.***.**.*.**.***.**.*.**.***");
         Random startFloor = new Random();
         Random endFloor = new Random();
-        for (int i = 0; i < nRaiders; i++) {
-            Raider raider = new Raider(i, startFloor.nextInt(nFloors), endFloor.nextInt(nFloors));
+        for (int id = 1; id <= nRaiders; id++) {
+            Raider raider = new Raider(building, id, startFloor.nextInt(nFloors), endFloor.nextInt(nFloors));
             raiders.add(raider);
         }
 
