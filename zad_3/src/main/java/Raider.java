@@ -18,25 +18,26 @@ public class Raider implements Runnable {
 
     @Override
     public void run() {
+        Elevator elevator;
         while (true) {
             if (startFloor < stopFloor) {
                 System.out.println("Raider " + raiderId + " want to go up from floor " + startFloor);
-                this.building.callUp(startFloor, raiderId);
+               elevator = building.callUp(startFloor, raiderId);
             } else {
                 System.out.println("Raider " + raiderId + " want to go down from floor " + startFloor);
-                this.building.callDown(startFloor, raiderId);
+                elevator = building.callDown(startFloor, raiderId);
             }
-            if (this.building.getElevator().enterElevator(raiderId)) {
+            if (elevator.enterElevator(raiderId)) {
                 System.out.println("Raider " + raiderId + " has entered elevator");
                 break;
             }
         }
 
         System.out.println("Raider " + raiderId + " on elevator wants to go to floor " + stopFloor);
-        this.building.getElevator().requestFloor(stopFloor, raiderId);
+        elevator.requestFloor(stopFloor, raiderId);
 
         System.out.println("Raider " + raiderId + " exit elevator on floor " + stopFloor);
-        this.building.getElevator().exitElevator(raiderId);
+        elevator.exitElevator(raiderId);
 
     }
 

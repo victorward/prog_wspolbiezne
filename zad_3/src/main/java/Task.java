@@ -9,7 +9,7 @@ public class Task {
         System.out.println("Launching elevator...");
         Task task = new Task();
         try {
-            task.startSimulation(10, 3);
+            task.startSimulation(10, 1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -17,7 +17,6 @@ public class Task {
 
     private void startSimulation(int nFloors, int nRaiders) throws InterruptedException {
         Building building = new Building(nFloors);
-        Elevator elevator = building.getElevator();
         ArrayList<Raider> raiders = new ArrayList<>();
 
         System.out.println("***.**.*.**.***.**.*.**.***.**.*.**.***");
@@ -37,7 +36,9 @@ public class Task {
         }
 
         // Start elevator
-        elevator.getThread().start();
+        for(Elevator elevator : building.getElevators()) {
+            elevator.getThread().start();
+        }
 
         // Wait for raiders threads to terminate
         for (Raider r : raiders) {
@@ -45,8 +46,9 @@ public class Task {
         }
 
         // Stop elevator
-        elevator.getThread().interrupt();
-
+        for(Elevator elevator : building.getElevators()) {
+            elevator.getThread().interrupt();
+        }
 
     }
 

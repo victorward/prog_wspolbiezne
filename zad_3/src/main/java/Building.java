@@ -1,26 +1,71 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Yuriy on 25.10.2017.
  */
 class Building {
     private int nFloors;
-    private Elevator elevator;
+    private List<Elevator> elevators;
+    private Elevator[] goingUpStops;
+    private Elevator[] goingDownStops;
 
     Building(int nFloors) {
         this.nFloors = nFloors;
-        this.elevator = new Elevator(this);
+        this.elevators = new ArrayList<>();
+        elevators.add(new Elevator(this));
+
+        this.goingUpStops = new Elevator[this.nFloors];
+        this.goingDownStops = new Elevator[this.nFloors];
     }
 
-    Elevator getElevator() {
-        return elevator;
+    public List<Elevator> getElevators() {
+        return elevators;
     }
 
-    private void callElevator(int fromFloor, boolean isGoingUp, int raiderId) {
+    public synchronized void removeStop(int arrivedFloor, boolean isGoingUp) {
+        if (isGoingUp) {
+            this.goingUpStops[arrivedFloor] = null;
+        } else {
+            this.goingDownStops[arrivedFloor] = null;
+        }
+    }
+
+    public synchronized void addStop(int requestedFloor, boolean isGoingUp, Elevator elevator) {
+        if (isGoingUp) {
+            this.goingUpStops[requestedFloor] = elevator;
+        } else {
+            this.goingDownStops[requestedFloor] = elevator;
+        }
+    }
+
+
+    public synchronized Elevator find(int floor, boolean isGoingUp) {
+        Elevator elevator;
+        boolean hasElevatorGoingUpToFloor = this.goingUpStops[floor] != null;
+        boolean hasElevatorGoingDownToFloor = this.goingDownStops[floor] != null;
+        if (isGoingUp && hasElevatorGoingUpToFloor) {
+            elevator = this.goingUpStops[floor];
+            return elevator;
+        } else if (!isGoingUp && hasElevatorGoingDownToFloor) {
+            elevator = this.goingDownStops[floor];
+            return elevator;
+        } else {
+            elevator = elevators.get(0);
+            this.addStop(floor, isGoingUp, elevator);
+            return elevator;
+        }
+    }
+
+    private Elevator callElevator(int fromFloor, boolean isGoingUp, int raiderId) {
+        Elevator elevator = find(fromFloor, isGoingUp);
+
         if (isGoingUp) {
             System.out.println("Elevator called by rider " + raiderId + " on floor " + fromFloor + " to go up");
         } else {
             System.out.println("Elevator  called by rider " + raiderId + " on floor " + fromFloor + " to go down");
         }
-        this.elevator.requestFloor(fromFloor, isGoingUp, raiderId);
+        elevator.requestFloor(fromFloor, isGoingUp, raiderId);
         while (elevator.isGoingUp() != isGoingUp) {
             elevator.passIfWrongDirection();
             synchronized (this) {
@@ -33,15 +78,17 @@ class Building {
                     }
                 }
             }
+            elevator.requestFloor(fromFloor, isGoingUp, raiderId);
         }
+        return elevator;
     }
 
-    void callUp(int fromFloor, int raiderId) {
-        callElevator(fromFloor, true, raiderId);
+    Elevator callUp(int fromFloor, int raiderId) {
+        return callElevator(fromFloor, true, raiderId);
     }
 
-    void callDown(int fromFloor, int raiderId) {
-        callElevator(fromFloor, false, raiderId);
+    Elevator callDown(int fromFloor, int raiderId) {
+        return callElevator(fromFloor, false, raiderId);
     }
 
     public int getnFloors() {

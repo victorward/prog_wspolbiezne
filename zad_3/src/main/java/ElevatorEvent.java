@@ -36,6 +36,7 @@ public class ElevatorEvent {
             return;
         }
         System.out.println("Elevator doors are opened on floor " + floor);
+        this.eventInProgress = true;
         notifyAll();
         while (this.waiters != 0) {
             try {
