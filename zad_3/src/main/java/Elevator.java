@@ -78,15 +78,25 @@ public class Elevator implements Runnable {
     }
 
     private void simulateMovement(int floor) {
-//        int floorToMove = Math.abs(floor - currentFloor);
-//        int speed = 1000;
-//        try {
-//            thread.join(floorToMove * speed); // nie wiem czy to tak, czy przez Thread.sleep czy inaczej
-//            this.currentFloor = floor;
-//            System.out.println("Elevator " + (this.isGooingUp ? " has moved up to floor " : " has moved down to floor ") + this.currentFloor);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        int floorToMove = Math.abs(floor - currentFloor);
+        int speed = 400;
+        try {
+            for (int i = 1; i <= floorToMove; i++) {
+                thread.join(speed); // nie wiem czy to tak, czy przez Thread.sleep czy inaczej
+                int tmpFloor;
+                if (isGooingUp) {
+                    tmpFloor = this.currentFloor + i;
+                } else {
+                    tmpFloor = this.currentFloor - i;
+                }
+                System.out.println("Elevator is now on floor === " + tmpFloor);
+            }
+            this.building.removeStop(floor, this.isGooingUp);
+            this.currentFloor = floor;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         this.building.removeStop(floor, this.isGooingUp);
         this.currentFloor = floor;
         System.out.println("Elevator [has moved] to " + this.currentFloor);
@@ -146,8 +156,12 @@ public class Elevator implements Runnable {
                 return next;
             } else {
                 this.isGooingUp = false;
-                this.currentFloor = building.getnFloors();  // tutaj robie ostatnie pietro zeby sprawdzic na ktore najwyzsze pietro chce pojechac raider
-                next = this.downRequests.lower(this.currentFloor);
+                
+//                this.currentFloor = building.getnFloors();  // tutaj robie ostatnie pietro zeby sprawdzic na ktore najwyzsze pietro chce pojechac raider
+//                next = this.downRequests.lower(this.currentFloor);
+
+                next = this.downRequests.lower(building.getnFloors());
+
                 if (next != null) {
                     System.out.println("Elevator is [going to process request] from raider to go to floor  " + next);
                     return next;
@@ -163,8 +177,12 @@ public class Elevator implements Runnable {
                 return next;
             } else {
                 this.isGooingUp = true;
-                this.currentFloor = -1;
-                next = this.upRequests.higher(this.currentFloor);
+
+//                this.currentFloor = -1;
+//                next = this.upRequests.higher(this.currentFloor);
+
+                next = this.upRequests.higher(-1);
+
                 if (next != null) {
                     System.out.println("Elevator is [going to process request] from raider to go up to floor " + next);
                     return next;
