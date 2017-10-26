@@ -1,29 +1,24 @@
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Yuriy on 25.10.2017.
  */
 class Building {
     private int nFloors;
-    private List<Elevator> elevators;
+    private Elevator elevator;
     private Elevator[] goingUpStops;
     private Elevator[] goingDownStops;
 
     Building(int nFloors) {
         this.nFloors = nFloors;
-        this.elevators = new ArrayList<>();
-        elevators.add(new Elevator(this));
-
+        this.elevator = new Elevator(this);
         this.goingUpStops = new Elevator[this.nFloors];
         this.goingDownStops = new Elevator[this.nFloors];
     }
 
-    public List<Elevator> getElevators() {
-        return elevators;
+    Elevator getElevator() {
+        return elevator;
     }
 
-    public synchronized void removeStop(int arrivedFloor, boolean isGoingUp) {
+    synchronized void removeStop(int arrivedFloor, boolean isGoingUp) {
         if (isGoingUp) {
             this.goingUpStops[arrivedFloor] = null;
         } else {
@@ -31,7 +26,7 @@ class Building {
         }
     }
 
-    public synchronized void addStop(int requestedFloor, boolean isGoingUp, Elevator elevator) {
+    synchronized void addStop(int requestedFloor, boolean isGoingUp, Elevator elevator) {
         if (isGoingUp) {
             this.goingUpStops[requestedFloor] = elevator;
         } else {
@@ -40,7 +35,7 @@ class Building {
     }
 
 
-    public synchronized Elevator find(int floor, boolean isGoingUp) {
+    private synchronized Elevator find(int floor, boolean isGoingUp) {
         Elevator elevator;
         boolean hasElevatorGoingUpToFloor = this.goingUpStops[floor] != null;
         boolean hasElevatorGoingDownToFloor = this.goingDownStops[floor] != null;
@@ -51,7 +46,7 @@ class Building {
             elevator = this.goingDownStops[floor];
             return elevator;
         } else {
-            elevator = elevators.get(0);
+            elevator = this.elevator;
             this.addStop(floor, isGoingUp, elevator);
             return elevator;
         }
@@ -91,7 +86,7 @@ class Building {
         return callElevator(fromFloor, false, raiderId);
     }
 
-    public int getnFloors() {
+    int getnFloors() {
         return nFloors;
     }
 }

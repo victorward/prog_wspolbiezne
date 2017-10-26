@@ -8,7 +8,7 @@ public class Raider implements Runnable {
     private int stopFloor;
     private Thread thread;
 
-    public Raider(Building building, int raiderId, int startFloor, int stopFloor) {
+    Raider(Building building, int raiderId, int startFloor, int stopFloor) {
         this.building = building;
         this.raiderId = raiderId;
         this.startFloor = startFloor;
@@ -41,7 +41,7 @@ public class Raider implements Runnable {
 
     }
 
-    public Thread getThread() {
+    Thread getThread() {
         return thread;
     }
 }

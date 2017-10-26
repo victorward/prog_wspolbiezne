@@ -9,7 +9,7 @@ public class Task {
         System.out.println("Launching elevator...");
         Task task = new Task();
         try {
-            task.startSimulation(10, 1);
+            task.startSimulation(10, 2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -36,9 +36,7 @@ public class Task {
         }
 
         // Start elevator
-        for(Elevator elevator : building.getElevators()) {
-            elevator.getThread().start();
-        }
+        building.getElevator().getThread().start();
 
         // Wait for raiders threads to terminate
         for (Raider r : raiders) {
@@ -46,9 +44,7 @@ public class Task {
         }
 
         // Stop elevator
-        for(Elevator elevator : building.getElevators()) {
-            elevator.getThread().interrupt();
-        }
+        building.getElevator().getThread().interrupt();
 
     }
 
