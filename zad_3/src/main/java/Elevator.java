@@ -39,8 +39,8 @@ public class Elevator implements Runnable {
         while (true) {
             if (interrupted()) return;
 
-            boolean noMoreRequests = this.upRequests.isEmpty() && this.downRequests.isEmpty();
             int nextFloor = getNextRequestedFloor();
+            boolean noMoreRequests = this.upRequests.isEmpty() && this.downRequests.isEmpty();
 
             if (noMoreRequests) {
                 synchronized (this) {
@@ -146,7 +146,7 @@ public class Elevator implements Runnable {
                 return next;
             } else {
                 this.isGooingUp = false;
-                this.currentFloor = this.floorsEvents.length;
+                this.currentFloor = building.getnFloors();  // tutaj robie ostatnie pietro zeby sprawdzic na ktore najwyzsze pietro chce pojechac raider
                 next = this.downRequests.lower(this.currentFloor);
                 if (next != null) {
                     System.out.println("Elevator is [going to process request] from raider to go to floor  " + next);
