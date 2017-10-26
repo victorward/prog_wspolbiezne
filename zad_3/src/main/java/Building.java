@@ -56,9 +56,9 @@ class Building {
         Elevator elevator = find(fromFloor, isGoingUp);
 
         if (isGoingUp) {
-            System.out.println("Elevator called by rider " + raiderId + " on floor " + fromFloor + " to go up");
+            System.out.println("Elevator [called] by rider " + raiderId + " on floor " + fromFloor + " to go up");
         } else {
-            System.out.println("Elevator  called by rider " + raiderId + " on floor " + fromFloor + " to go down");
+            System.out.println("Elevator [called] by rider " + raiderId + " on floor " + fromFloor + " to go down");
         }
         elevator.requestFloor(fromFloor, isGoingUp, raiderId);
         while (elevator.isGoingUp() != isGoingUp) {

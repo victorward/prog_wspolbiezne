@@ -35,19 +35,19 @@ class ElevatorEvent {
         if (this.eventInProgress) {
             return;
         }
-        System.out.println("Elevator doors are opened on floor " + floor);
+        System.out.println("Elevator [doors are opened] on floor " + floor);
         this.eventInProgress = true;
         notifyAll();
         while (this.waiters != 0) {
             try {
-                System.out.println("Elevator is waiting for raiders to enter door on floor " + floor);
+                System.out.println("Elevator is [waiting for raiders to enter door] on floor " + floor);
                 super.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         this.eventInProgress = false;
-        System.out.println("Elevator is closing door on floor " + floor);
+        System.out.println("Elevator is [closing door] on floor " + floor);
     }
 
     // Rider thread signals its exit (rider has exited the elevator)
