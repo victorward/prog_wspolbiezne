@@ -26,7 +26,13 @@ public class Task {
         Random startFloor = new Random();
         Random endFloor = new Random();
         for (int id = 1; id <= nRaiders; id++) {
-            Raider raider = new Raider(building, id, startFloor.nextInt(nFloors), endFloor.nextInt(nFloors));
+            int start;
+            int end;
+            do {
+                start = startFloor.nextInt(nFloors);
+                end = endFloor.nextInt(nFloors);
+            } while (start == end);
+            Raider raider = new Raider(building, id, start, end);
             raiders.add(raider);
         }
 

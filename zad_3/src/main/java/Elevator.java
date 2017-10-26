@@ -152,7 +152,7 @@ public class Elevator implements Runnable {
                     System.out.println("Elevator is [going to process request] from raider to go to floor  " + next);
                     return next;
                 } else {
-                    System.out.println("Elevator is [going to go] to the default floor");
+//                    System.out.println("Elevator is [going to go] to the default floor");
                     return -1;
                 }
             }
@@ -166,10 +166,10 @@ public class Elevator implements Runnable {
                 this.currentFloor = -1;
                 next = this.upRequests.higher(this.currentFloor);
                 if (next != null) {
-                    System.out.println("Elevator is [going to process request] from raider to go pu to floor " + next);
+                    System.out.println("Elevator is [going to process request] from raider to go up to floor " + next);
                     return next;
                 } else {
-                    System.out.println("Elevator is [going to go] to the default floor");
+//                    System.out.println("Elevator is [going to go] to the default floor");
                     return -1;
                 }
             }
