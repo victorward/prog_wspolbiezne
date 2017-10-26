@@ -21,13 +21,12 @@ public class Raider implements Runnable {
     }
 
     int getTargetFloor() {
-        System.out.println(name + " want to go to " + targetFloor + " floor");
         return targetFloor;
     }
 
 
     int getStartingFloor() {
-        System.out.println(name + " is now on " + startingFloor + " floor");
+        System.out.println(name + " is on " + startingFloor + " floor");
         return startingFloor;
     }
 
@@ -39,14 +38,12 @@ public class Raider implements Runnable {
         left = true;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public void run() {
-        while (!left) {
-          
+        if (startingFloor < targetFloor) {
+            System.out.println(name + " want to go up from floor " + startingFloor + " to " + targetFloor + " floor");
+        } else {
+            System.out.println(name + " want to go down from floor " + startingFloor + " to " + targetFloor + " floor");
         }
     }
 }
