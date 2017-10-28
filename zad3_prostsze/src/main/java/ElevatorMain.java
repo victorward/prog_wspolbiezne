@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class ElevatorMain {
     public static void main(String[] args) {
         ElevatorMain elevatorMain = new ElevatorMain();
@@ -13,9 +11,9 @@ public class ElevatorMain {
         System.out.println("Number of raiders: " + nRaiders);
         System.out.println("***.**.*.**.***.**.*.**.***.**.*.**.***");
         Elevator elevator = new Elevator();
-        new Raider(elevator, 5, 6, "A");
-        new Raider(elevator, 0, 1, "B");
-        new Raider(elevator, 5, 0, "C");
+        new Raider(elevator, 5, 6, "Anna");
+        new Raider(elevator, 0, 1, "Bella");
+        new Raider(elevator, 5, 0, "Cyndia");
 
     }
 }

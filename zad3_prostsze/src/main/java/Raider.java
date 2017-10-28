@@ -8,72 +8,45 @@ public class Raider implements Runnable {
     private String name;
     private boolean entered;
 
-    public Raider(Elevator elevator,int destinationFloor,int startFloor, String name){
+    Raider(Elevator elevator, int destinationFloor, int startFloor, String name) {
         this.elevator = elevator;
         this.destinationFloor = destinationFloor;
         this.startFloor = startFloor;
         this.name = name;
         entered = false;
+        System.out.println("Raider " + name + " now is on " + startFloor + " and want to go to " + destinationFloor + " floor");
         new Thread(this).start();
     }
+
     @Override
     public void run() {
-/*        while (true){
-            elevator.orderElevator(startFloor);
-            if (elevator.getCurrentFloor()==startFloor && !entered){
+        while (!entered) {
+            elevator.orderElevator(this);
+            if (elevator.getCurrentFloor() == startFloor) {
                 elevator.enterElevator(this);
-                entered = true;
-                System.out.println("Raider "+name + " entered the elevator");
-                elevator.callToFloor(destinationFloor);
-                break;
-            }
-        }*/
-        while(elevator.getCurrentFloor()!=destinationFloor){
-            if(!entered){
-                if(elevator.getIsWaiting()){
-                    elevator.orderElevator(startFloor);
-                }
-                if(elevator.getCurrentFloor()==startFloor && !entered){
-                    elevator.enterElevator(this);
-                    entered = true;
-                    System.out.println("Raider "+name + " entered the elevator");
-                }
-            }else if(entered){
-                elevator.callToFloor(destinationFloor);
+                setEntered(true);
             }
         }
+        while (elevator.getCurrentFloor() != destinationFloor) {
+            elevator.callToFloor(this);
+        }
 
-        System.out.println("Raider "+name + " arrived to his destination floor");
+        System.out.println("Raider " + name + " arrived to his destination floor");
+    }
 
-    }
-    public Elevator getElevator() {
-        return elevator;
-    }
-    public void setElevator(Elevator elevator) {
-        this.elevator = elevator;
-    }
-    public int getDestinationFloor() {
+    int getDestinationFloor() {
         return destinationFloor;
     }
-    public void setDestinationFloor(int destinationFloor) {
-        this.destinationFloor = destinationFloor;
-    }
-    public int getStartFloor() {
+
+    int getStartFloor() {
         return startFloor;
     }
-    public void setStartFloor(int startFloor) {
-        this.startFloor = startFloor;
-    }
-    public String getName() {
+
+    String getName() {
         return name;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public boolean isEntered() {
-        return entered;
-    }
-    public void setEntered(boolean entered) {
+
+    private void setEntered(boolean entered) {
         this.entered = entered;
     }
 
