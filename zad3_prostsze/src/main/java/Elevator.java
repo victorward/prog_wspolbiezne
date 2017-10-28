@@ -3,9 +3,9 @@ import java.util.ArrayList;
 public class Elevator {
     private ArrayList<Raider> queue;
     private ArrayList<Raider> raiders;
-    private int currentFloor;
-    private int destinationFloor;
-    private boolean isWaiting;
+    private volatile int currentFloor;
+    private volatile int destinationFloor;
+    private volatile boolean isWaiting;
 
     Elevator() {
         isWaiting = true;
@@ -75,6 +75,7 @@ public class Elevator {
     public int getCurrentFloor(){
         return currentFloor;
     }
+
     private void moveElevator(){
         if(currentFloor<destinationFloor){
             moveUp();

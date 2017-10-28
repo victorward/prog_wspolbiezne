@@ -5,7 +5,7 @@ public class Task {
         System.out.println("Launching elevator...");
         Task task = new Task();
         try {
-            task.startSimulation(10, 2);
+            task.startSimulation(10, 4);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

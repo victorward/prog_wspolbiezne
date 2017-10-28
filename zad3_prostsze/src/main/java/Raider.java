@@ -18,6 +18,16 @@ public class Raider implements Runnable {
     }
     @Override
     public void run() {
+/*        while (true){
+            elevator.orderElevator(startFloor);
+            if (elevator.getCurrentFloor()==startFloor && !entered){
+                elevator.enterElevator(this);
+                entered = true;
+                System.out.println("Raider "+name + " entered the elevator");
+                elevator.callToFloor(destinationFloor);
+                break;
+            }
+        }*/
         while(elevator.getCurrentFloor()!=destinationFloor){
             if(!entered){
                 if(elevator.getIsWaiting()){
@@ -33,7 +43,7 @@ public class Raider implements Runnable {
             }
         }
 
-        System.out.println("Student "+name + " arrived to his destination floor");
+        System.out.println("Raider "+name + " arrived to his destination floor");
 
     }
     public Elevator getElevator() {
