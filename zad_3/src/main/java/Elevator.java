@@ -2,9 +2,6 @@ import java.util.TreeSet;
 
 import static java.lang.Thread.interrupted;
 
-/**
- * @author Yuriy on 25.10.2017.
- */
 public class Elevator implements Runnable {
     private int currentFloor;
     private int nRaiders;

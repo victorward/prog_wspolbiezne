@@ -1,9 +1,5 @@
 import java.util.ArrayList;
 import java.util.Random;
-
-/**
- * @author Yuriy on 25.10.2017.
- */
 public class Task {
     public static void main(String[] args) {
         System.out.println("Launching elevator...");
@@ -29,8 +25,8 @@ public class Task {
             int start;
             int end;
             do {
-                start = startFloor.nextInt(nFloors);
-                end = endFloor.nextInt(nFloors);
+                start = startFloor.nextInt(nFloors+1);
+                end = endFloor.nextInt(nFloors+1);
             } while (start == end);
             Raider raider = new Raider(building, id, start, end);
             raiders.add(raider);

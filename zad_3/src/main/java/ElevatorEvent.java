@@ -1,6 +1,3 @@
-/**
- * @author Yuriy on 25.10.2017.
- */
 class ElevatorEvent {
     private int waiters;
     private boolean eventInProgress;
@@ -57,7 +54,7 @@ class ElevatorEvent {
             System.out.println("There are no more raiders waiting for elevator on floor " + floor);
             notifyAll();
         } else {
-            System.out.println(this.waiters + " rider/s left waintg to enter elevator on floor " + floor);
+            System.out.println(this.waiters + " rider/s left waiting to enter elevator on floor " + floor);
         }
     }
 }

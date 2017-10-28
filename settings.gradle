@@ -2,4 +2,5 @@ rootProject.name = 'wspol-zad1'
 include 'zad_3'
 include 'zad-4'
 include 'zadanie-5'
+include 'zad3_prostsze'
 

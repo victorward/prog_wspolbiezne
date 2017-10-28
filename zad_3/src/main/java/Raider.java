@@ -1,6 +1,3 @@
-/**
- * @author Yuriy on 25.10.2017.
- */
 public class Raider implements Runnable {
     private Building building;
     private int raiderId;
