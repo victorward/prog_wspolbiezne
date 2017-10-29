@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class ElevatorMain {
     public static void main(String[] args) {
         ElevatorMain elevatorMain = new ElevatorMain();
@@ -10,10 +12,18 @@ public class ElevatorMain {
         System.out.println("Number of floors in building: " + nFloors);
         System.out.println("Number of raiders: " + nRaiders);
         System.out.println("***.**.*.**.***.**.*.**.***.**.*.**.***");
-        Elevator elevator = new Elevator();
-        new Raider(elevator, 5, 6, "Anna");
-        new Raider(elevator, 0, 1, "Bella");
-        new Raider(elevator, 5, 0, "Cyndia");
 
+        ArrayList<Raider> raiders = new ArrayList<>();
+
+        raiders.add(new Raider(5, 6, "Anna"));
+        raiders.add(new Raider(0, 1, "Bella"));
+        raiders.add(new Raider(5, 0, "Cyndia"));
+        raiders.add(new Raider(5, 0, "Cyndia's friend"));
+        Elevator elevator = new Elevator(raiders);
+
+        for (Raider r : raiders) {
+            r.setElevator(elevator);
+            r.getThread().start();
+        }
     }
 }

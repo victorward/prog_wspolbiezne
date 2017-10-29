@@ -7,15 +7,19 @@ public class Raider implements Runnable {
     private int startFloor;
     private String name;
     private boolean entered;
+    private Thread thread;
 
-    Raider(Elevator elevator, int destinationFloor, int startFloor, String name) {
-        this.elevator = elevator;
+    Raider(int destinationFloor, int startFloor, String name) {
         this.destinationFloor = destinationFloor;
         this.startFloor = startFloor;
         this.name = name;
         entered = false;
+        this.thread = new Thread(this);
         System.out.println("Raider " + name + " now is on " + startFloor + " and want to go to " + destinationFloor + " floor");
-        new Thread(this).start();
+    }
+
+    void setElevator(Elevator elevator) {
+        this.elevator = elevator;
     }
 
     @Override
@@ -24,14 +28,10 @@ public class Raider implements Runnable {
             elevator.orderElevator(this);
             if (elevator.getCurrentFloor() == startFloor) {
                 elevator.enterElevator(this);
-                setEntered(true);
             }
         }
-        while (elevator.getCurrentFloor() != destinationFloor) {
-            elevator.callToFloor(this);
-        }
-
-        System.out.println("Raider " + name + " arrived to his destination floor");
+        elevator.callToFloor(this);
+        System.out.println(name + " thread ended");
     }
 
     int getDestinationFloor() {
@@ -46,9 +46,16 @@ public class Raider implements Runnable {
         return name;
     }
 
-    private void setEntered(boolean entered) {
+    void setEntered(boolean entered) {
         this.entered = entered;
     }
 
+    void stopTheThread() {
+        thread.interrupt();
+    }
 
+
+    public Thread getThread() {
+        return thread;
+    }
 }
