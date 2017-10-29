@@ -20,8 +20,16 @@ public class Raider implements Runnable {
 
     @Override
     public void run() {
+        this.elevator.addRaiderToQueue(this);
         while (!entered) {
-            elevator.orderElevator(this);
+            if (elevator.getIsWaiting()) {
+                try {
+                    elevator.orderElevator(this);
+                } catch (InterruptedException e) {
+
+                }
+            }
+
             if (elevator.getCurrentFloor() == startFloor) {
                 elevator.enterElevator(this);
                 setEntered(true);

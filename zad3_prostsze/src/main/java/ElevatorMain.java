@@ -11,9 +11,9 @@ public class ElevatorMain {
         System.out.println("Number of raiders: " + nRaiders);
         System.out.println("***.**.*.**.***.**.*.**.***.**.*.**.***");
         Elevator elevator = new Elevator();
-        new Raider(elevator, 5, 6, "Anna");
-        new Raider(elevator, 0, 1, "Bella");
-        new Raider(elevator, 5, 0, "Cyndia");
+        new Raider(elevator, 0, 6, "Anna");
+        new Raider(elevator, 0, 6, "Bella");
+        new Raider(elevator, 6, 1, "Cyndia");
 
     }
 }

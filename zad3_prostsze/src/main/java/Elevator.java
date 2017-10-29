@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 class Elevator {
     private ArrayList<Raider> raiders;
+    private ArrayList<Raider> raidersWaiting;
     private volatile int currentFloor;
     private volatile int destinationFloor;
     private volatile boolean isWaiting;
@@ -11,8 +12,17 @@ class Elevator {
         currentFloor = 0;
         destinationFloor = 0;
         raiders = new ArrayList<>();
+        raidersWaiting = new ArrayList<>();
 
         waitForOrder();
+    }
+
+    private void moveElevator() {
+        if (currentFloor < destinationFloor) {
+            moveUp();
+        } else if (currentFloor > destinationFloor) {
+            moveDown();
+        }
     }
 
     private void moveUp() {
@@ -30,13 +40,14 @@ class Elevator {
         isWaiting = true;
     }
 
-    synchronized void orderElevator(Raider raider) {
+    synchronized void orderElevator(Raider raider) throws InterruptedException  {
         if (isWaiting) {
+            isWaiting = false;
             int destination = raider.getStartFloor();
             destinationFloor = destination;
-            isWaiting = false;
             System.out.println("The elevator is called and go to the " + destination + " floor");
             moveElevator(destination);
+            wait();
         }
     }
 
@@ -49,9 +60,11 @@ class Elevator {
     private void moveElevator(int destinationFloor) {
         while (currentFloor != destinationFloor) {
             moveElevator();
-            checkRaiders();
+            if (raiders.size() > 0) {
+                checkRaiders();
+            }
             try {
-                Thread.sleep(250);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -59,29 +72,39 @@ class Elevator {
     }
 
     synchronized void enterElevator(Raider raider) {
+        notify();
         System.out.println("Raider " + raider.getName() + " entered the elevator");
-        raiders.add(raider);
+        for (int i=0; i<raidersWaiting.size(); i++){
+            if(raidersWaiting.get(i).getStartFloor() == this.getCurrentFloor()){
+                raiders.add(raider);
+            }
+        }
     }
 
     int getCurrentFloor() {
         return currentFloor;
     }
 
-    private void moveElevator() {
-        if (currentFloor < destinationFloor) {
-            moveUp();
-        } else if (currentFloor > destinationFloor) {
-            moveDown();
-        }
-    }
-
     private void checkRaiders() {
         for (int i = 0; i < raiders.size(); i++) {
             if (raiders.get(i).getDestinationFloor() == currentFloor) {
-                isWaiting = true;
                 raiders.remove(i);
                 i--;
+                if (raiders.size() > 0 ){
+                    destinationFloor = raiders.get(0).getDestinationFloor();
+                }
             }
         }
+        if (raiders.size() == 0){
+            waitForOrder();
+        }
+    }
+
+    public void addRaiderToQueue(Raider raider){
+        raidersWaiting.add(raider);
+    }
+
+    public boolean getIsWaiting(){
+        return isWaiting;
     }
 }
