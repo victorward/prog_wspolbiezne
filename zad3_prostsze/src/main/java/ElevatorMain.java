@@ -15,10 +15,11 @@ public class ElevatorMain {
 
         ArrayList<Raider> raiders = new ArrayList<>();
 
-        raiders.add(new Raider(5, 6, "Anna"));
-        raiders.add(new Raider(0, 1, "Bella"));
-        raiders.add(new Raider(5, 0, "Cyndia"));
-        raiders.add(new Raider(5, 0, "Cyndia's friend"));
+
+        raiders.add(new Raider(3, 0, "Cyndia"));
+        raiders.add(new Raider(4, 0, "Cyndia's friend"));
+        raiders.add(new Raider(8, 6, "Bella"));
+        raiders.add(new Raider(5, 4, "Anna"));
         Elevator elevator = new Elevator(raiders);
 
         for (Raider r : raiders) {

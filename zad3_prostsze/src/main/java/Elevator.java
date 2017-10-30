@@ -100,7 +100,11 @@ class Elevator {
                 System.out.println("Raider " + tmpRaider.getName() + " arrived to his destination floor");
                 raiders.remove(i);
                 i--;
+                tmpRaider.setCurrentFloor(currentFloor);
             }
         }
+    }
+    public boolean getIsWaiting(){
+        return isWaiting;
     }
 }

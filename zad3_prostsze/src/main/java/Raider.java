@@ -5,12 +5,14 @@ public class Raider implements Runnable {
     private Elevator elevator;
     private int destinationFloor;
     private int startFloor;
+    private int currentFloor;
     private String name;
     private boolean entered;
     private Thread thread;
 
     Raider(int destinationFloor, int startFloor, String name) {
         this.destinationFloor = destinationFloor;
+        this.currentFloor = startFloor;
         this.startFloor = startFloor;
         this.name = name;
         entered = false;
@@ -25,13 +27,21 @@ public class Raider implements Runnable {
     @Override
     public void run() {
         while (!entered) {
-            elevator.orderElevator(this);
+            if (elevator.getIsWaiting()){
+                elevator.orderElevator(this);
+            }
+
             if (elevator.getCurrentFloor() == startFloor) {
                 elevator.enterElevator(this);
             }
+            if (this.destinationFloor == this.currentFloor){
+                System.out.println(name + " thread ended");
+                stopTheThread();
+            }
         }
+
         elevator.callToFloor(this);
-        System.out.println(name + " thread ended");
+        //System.out.println(name + " thread ended");
     }
 
     int getDestinationFloor() {
@@ -57,5 +67,9 @@ public class Raider implements Runnable {
 
     public Thread getThread() {
         return thread;
+    }
+
+    public void setCurrentFloor(int currentFloor){
+        this.currentFloor = currentFloor;
     }
 }
