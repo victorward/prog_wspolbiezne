@@ -33,6 +33,7 @@ class Elevator {
         if (inElevator.size() == 0 && queue.size() != 0) {
             if (isWaiting) {
                 queue.get(0).acquire();
+                System.out.println(queue.get(0).getName() + " is on " + queue.get(0).getStartingFloor() + " floor");
                 callForElevator(queue.get(0).getStartingFloor());
                 System.out.println("The " + queue.get(0).getName() + " enter the elevator");
                 moveToFloor(queue.get(0).getTargetFloor());
@@ -95,7 +96,7 @@ class Elevator {
 
                 e.printStackTrace();
             }
-            System.out.println("The elevator is now on " + currentFloor + " floor");
+            System.out.println("The elevator moved to " + currentFloor + " floor");
         } else if (destinationFloor == currentFloor) {
             System.out.println("The elevator is now on requested floor");
         }

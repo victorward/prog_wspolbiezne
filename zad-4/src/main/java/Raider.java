@@ -23,7 +23,6 @@ public class Raider implements Runnable {
 
 
     int getStartingFloor() {
-        System.out.println(name + " is on " + startingFloor + " floor");
         return startingFloor;
     }
 
