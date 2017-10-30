@@ -1,8 +1,5 @@
 import java.util.Random;
 
-/**
- * @author Yuriy on 26.10.2017.
- */
 public class ElevatorMain {
 
     public static void main(String[] args) {
