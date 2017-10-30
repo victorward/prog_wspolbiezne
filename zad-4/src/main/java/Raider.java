@@ -35,6 +35,7 @@ public class Raider implements Runnable {
     }
 
     void setLeft() {
+        System.out.println(name + " thread ended");
         left = true;
     }
 
@@ -44,6 +45,9 @@ public class Raider implements Runnable {
             System.out.println(name + " want to go up from floor " + startingFloor + " to " + targetFloor + " floor");
         } else {
             System.out.println(name + " want to go down from floor " + startingFloor + " to " + targetFloor + " floor");
+        }
+        while (!left) {
+
         }
     }
 }

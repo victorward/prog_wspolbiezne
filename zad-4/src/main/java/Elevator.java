@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * @author Yuriy on 26.10.2017.
  */
-public class Elevator {
+class Elevator {
     private ArrayList<Raider> queue;
     private ArrayList<Raider> inElevator;
     private int currentFloor;

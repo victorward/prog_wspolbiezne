@@ -29,8 +29,8 @@ public class ElevatorMain {
             Raider raider = new Raider(start, end, "[Raider " + id + "]");
             elevator.addRaiderToQueue(raider);
         }
-//        elevator.addRaiderToQueue(new Raider(7,2, "[masha]"));
-//        elevator.addRaiderToQueue(new Raider(10,2, "[pasha]"));
+//        elevator.addRaiderToQueue(new Raider(7,2, "[Sandra]"));
+//        elevator.addRaiderToQueue(new Raider(10,2, "[Anna]"));
         elevator.run();
     }
 }
