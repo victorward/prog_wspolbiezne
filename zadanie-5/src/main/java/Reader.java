@@ -1,13 +1,12 @@
-/**
- * @author Yuriy on 26.10.2017.
- */
 public class Reader implements Runnable {
     Book book;
     long delay;
+    String name;
 
-    public Reader(Book book, long delay) {
+    public Reader(Book book, long delay, String name) {
         this.book = book;
         this.delay = delay;
+        this.name = name;
         new Thread(this).start();
     }
 
@@ -20,14 +19,8 @@ public class Reader implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         while (!flag) {
-            flag = book.read();
-            try {
-                Thread.sleep(delay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            flag = book.read(this.name);
         }
     }
 }
