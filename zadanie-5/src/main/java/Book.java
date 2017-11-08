@@ -17,7 +17,7 @@ public class Book {
                 readLocker.acquire();
                 System.out.println(name + " czyta. Dane są czytane przez  " + (10 - readLocker.availablePermits()) + " czytelnikow");
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -39,11 +39,12 @@ public class Book {
                 System.out.println("Zapis zablokowany\n" + name + " pisze");
                 System.out.println(10-readLocker.availablePermits() + " czytelnikow czyta");
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 System.out.println("Zapis zwolniony");
+                Thread.sleep(50);
                 writeLocker.release();
                 return true;
             } catch (InterruptedException e) {
