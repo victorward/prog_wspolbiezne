@@ -9,7 +9,8 @@ public class Reader implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        boolean cont = true;
+        while (cont) {
             Sleeping.sleep();
             System.out.println("Reader " + id + " want to read");
             book.acquireReadLock(id);

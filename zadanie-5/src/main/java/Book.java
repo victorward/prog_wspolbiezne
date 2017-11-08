@@ -12,20 +12,21 @@ public class Book {
     }
 
     public void acquireReadLock(int readerNum) {
-        try{
+        try {
             readLocker.acquire();
+        } catch (InterruptedException e) {
         }
-        catch (InterruptedException e) {}
 
         ++readersCount;
 
         // if I am the first reader tell all others
         // that the book is being read
-        if (readersCount == 1){
-            try{
+        if (readersCount == 1) {
+            try {
                 writeLocker.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            catch (InterruptedException e) {}
         }
 
         System.out.println("Reader " + readerNum + " is reading. Reader count = " + readersCount);
@@ -33,17 +34,18 @@ public class Book {
         readLocker.release();
     }
 
-    public void releaseReadLock(int readerNum) {
-        try{
+    void releaseReadLock(int readerNum) {
+        try {
             readLocker.acquire();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        catch (InterruptedException e) {}
 
         --readersCount;
 
         // if I am the last reader tell all others
         // that the database is no longer being read
-        if (readersCount == 0){
+        if (readersCount == 0) {
             writeLocker.release();
         }
 
@@ -54,10 +56,10 @@ public class Book {
     }
 
     public void acquireWriteLock(int writerNum) {
-        try{
+        try {
             writeLocker.acquire();
+        } catch (InterruptedException e) {
         }
-        catch (InterruptedException e) {}
         System.out.println("Writer " + writerNum + " is writing.");
     }
 

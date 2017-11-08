@@ -9,12 +9,13 @@ public class Writer implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        boolean cont = true;
+        while (cont) {
             Sleeping.sleep();
             System.out.println("Writer " + id + " want to write");
             book.acquireWriteLock(id);
             Sleeping.sleep();
-            book.acquireWriteLock(id);
+            book.releaseWriteLock(id);
         }
     }
 }
