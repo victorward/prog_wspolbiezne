@@ -3,55 +3,66 @@ import java.util.concurrent.Semaphore;
 public class Book {
     Semaphore readLocker;
     Semaphore writeLocker;
-    boolean timeForWriters;
+    int readersCount;
 
     public Book() {
-        this.readLocker = new Semaphore(10);
+        this.readLocker = new Semaphore(1);
         this.writeLocker = new Semaphore(1);
-        timeForWriters = false;
+        readersCount = 0;
     }
 
-    public boolean read(String name) {
-        if (writeLocker.availablePermits() == 1 && !timeForWriters) {
-            try {
-                readLocker.acquire();
-                System.out.println(name + " czyta. Dane są czytane przez  " + (10 - readLocker.availablePermits()) + " czytelnikow");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                readLocker.release();
-                System.out.println(name + " przestal czytac.  Dane są czytane przez  " + (10 - readLocker.availablePermits()) + " czytelnikow");
-                return true;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            timeForWriters = true;
+    public void acquireReadLock(int readerNum) {
+        try{
+            readLocker.acquire();
         }
-        return false;
-    }
+        catch (InterruptedException e) {}
 
-    public synchronized boolean write(String name) {
-        if (readLocker.availablePermits() == 10 && writeLocker.availablePermits() == 1) {
-            try {
+        ++readersCount;
+
+        // if I am the first reader tell all others
+        // that the book is being read
+        if (readersCount == 1){
+            try{
                 writeLocker.acquire();
-                System.out.println("Zapis zablokowany\n" + name + " pisze");
-                System.out.println(10-readLocker.availablePermits() + " czytelnikow czyta");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Zapis zwolniony");
-                Thread.sleep(50);
-                writeLocker.release();
-                return true;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-            timeForWriters = false;
+            catch (InterruptedException e) {}
         }
-        return false;
+
+        System.out.println("Reader " + readerNum + " is reading. Reader count = " + readersCount);
+
+        readLocker.release();
+    }
+
+    public void releaseReadLock(int readerNum) {
+        try{
+            readLocker.acquire();
+        }
+        catch (InterruptedException e) {}
+
+        --readersCount;
+
+        // if I am the last reader tell all others
+        // that the database is no longer being read
+        if (readersCount == 0){
+            writeLocker.release();
+        }
+
+        System.out.println("Reader " + readerNum + " is done reading. Reader count = " + readersCount);
+
+        //mutual exclusion for readerCount
+        readLocker.release();
+    }
+
+    public void acquireWriteLock(int writerNum) {
+        try{
+            writeLocker.acquire();
+        }
+        catch (InterruptedException e) {}
+        System.out.println("Writer " + writerNum + " is writing.");
+    }
+
+    public void releaseWriteLock(int writerNum) {
+        System.out.println("Writer " + writerNum + " is done writing.");
+        writeLocker.release();
     }
 }

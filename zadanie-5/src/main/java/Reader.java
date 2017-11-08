@@ -1,26 +1,20 @@
 public class Reader implements Runnable {
     Book book;
-    long delay;
-    String name;
+    int id;
 
-    public Reader(Book book, long delay, String name) {
+    public Reader(int id, Book book) {
         this.book = book;
-        this.delay = delay;
-        this.name = name;
-        new Thread(this).start();
+        this.id = id;
     }
-
 
     @Override
     public void run() {
-        boolean flag = false;
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        while (!flag) {
-            flag = book.read(this.name);
+        while (true) {
+            Sleeping.sleep();
+            System.out.println("Reader " + id + " want to read");
+            book.acquireReadLock(id);
+            Sleeping.sleep();
+            book.releaseReadLock(id);
         }
     }
 }
