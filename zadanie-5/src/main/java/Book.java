@@ -19,8 +19,6 @@ public class Book {
 
         ++readersCount;
 
-        // if I am the first reader tell all others
-        // that the book is being read
         if (readersCount == 1) {
             try {
                 writeLocker.acquire();
@@ -43,15 +41,12 @@ public class Book {
 
         --readersCount;
 
-        // if I am the last reader tell all others
-        // that the database is no longer being read
         if (readersCount == 0) {
             writeLocker.release();
         }
 
         System.out.println("Reader " + readerNum + " is done reading. Reader count = " + readersCount);
 
-        //mutual exclusion for readerCount
         readLocker.release();
     }
 

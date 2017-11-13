@@ -1,6 +1,3 @@
-/**
- * @author Yuriy on 08.11.2017.
- */
 public class Sleeping {
     private static final int duration = 5;
     private static final int sleep = 100;
